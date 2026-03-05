@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-sre-app
+  namespace: default
+  labels:
+    app: my-sre-app
+spec:
+  replicas: 2  # Run 2 pods — introduces you to replica management
+  selector:
+    matchLabels:
+      app: my-sre-app
+  template:
+    metadata:
+      labels:
+        app: my-sre-app
+      annotations:
+        # Tells Prometheus to scrape this pod automatically
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5000"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+        - name: my-sre-app
+          image: ghcr.io/YOUR_GITHUB_USERNAME/my-app:latest  # Replace with your image
+          ports:
+            - containerPort: 5000
+
+          # Resource requests and limits — critical SRE concept
+          # requests: what the scheduler uses to place the pod
+          # limits: hard ceiling, pod is killed if it exceeds this
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "128Mi"
+              cpu: "200m"
+
+          # Liveness probe: if this fails, Kubernetes restarts the container
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+
+          # Readiness probe: if this fails, pod is removed from load balancer
+          # Traffic only goes to pods that are ready
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 10

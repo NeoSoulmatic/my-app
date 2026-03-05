@@ -1,0 +1,29 @@
+# prometheus-values.yaml
+# Minimal config to get Prometheus + Grafana running locally via Helm
+#
+# Install with:
+#   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+#   helm repo update
+#   helm install monitoring prometheus-community/kube-prometheus-stack \
+#     --namespace monitoring \
+#     --create-namespace \
+#     --values prometheus-values.yaml
+
+grafana:
+  enabled: true
+  adminPassword: "admin"  # Change this in any real environment
+  service:
+    type: NodePort  # Exposes Grafana on a port you can hit locally
+
+prometheus:
+  prometheusSpec:
+    # Scrape interval — how often Prometheus polls /metrics endpoints
+    scrapeInterval: "15s"
+
+    # This tells Prometheus to find pods with the annotation
+    # prometheus.io/scrape: "true" (set in our deployment.yaml)
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+
+alertmanager:
+  enabled: false  # Keep it simple for local dev
