@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: my-sre-app
-          image: ghcr.io/YOUR_GITHUB_USERNAME/my-app:latest  # Replace with your image
+          image: ghcr.io/NeoSoulmatic/my-app:latest  # Replace with your image
           ports:
             - containerPort: 5000
 
