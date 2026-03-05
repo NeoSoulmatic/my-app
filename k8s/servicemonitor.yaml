@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: my-sre-app
+  namespace: monitoring
+  labels:
+    release: monitoring  # Must match the Helm release name
+spec:
+  namespaceSelector:
+    matchNames:
+      - default
+  selector:
+    matchLabels:
+      app: my-sre-app
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s

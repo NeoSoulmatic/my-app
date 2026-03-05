@@ -22,7 +22,8 @@ spec:
     spec:
       containers:
         - name: my-sre-app
-          image: ghcr.io/NeoSoulmatic/my-app:latest  # Replace with your image
+          image: my-sre-app:local
+          imagePullPolicy: Never  # Use local image, don't pull from registry
           ports:
             - containerPort: 5000
 
